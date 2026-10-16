@@ -17,39 +17,41 @@
 
   <style>
     :root {
+      color-scheme: dark;
       --bg: #080808;
-      --panel: rgba(17, 17, 20, .78);
+      --panel: rgba(17,17,20,.78);
       --panel-solid: #111113;
       --text: #f7f7fa;
       --muted: #92929d;
       --accent: #ff2929;
       --accent-dark: #850000;
-      --line: rgba(255, 55, 55, .17);
-      --glow: rgba(255, 20, 20, .12);
+      --line: rgba(255,55,55,.17);
+      --glow: rgba(255,20,20,.12);
       --radius: 22px;
       --max-width: 1120px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    body[data-theme="purple"] {
+      --accent: #b66bff;
+      --accent-dark: #5413a0;
+      --line: rgba(182,107,255,.22);
+      --glow: rgba(145,55,255,.14);
     }
 
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 100px;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
 
     body {
       min-height: 100vh;
       overflow-x: hidden;
       background:
-        radial-gradient(ellipse at 50% -15%, rgba(140, 0, 0, .25), transparent 42rem),
+        radial-gradient(ellipse at 50% -15%, var(--glow), transparent 42rem),
         var(--bg);
       color: var(--text);
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.65;
+      transition: background .3s, color .3s;
     }
 
     body::before {
@@ -58,41 +60,25 @@
       inset: 0;
       z-index: -1;
       pointer-events: none;
-      opacity: .13;
-      background-image: radial-gradient(#ffffff 0.55px, transparent .55px);
+      opacity: .1;
+      background-image: radial-gradient(#fff .55px, transparent .55px);
       background-size: 24px 24px;
       mask-image: linear-gradient(to bottom, black, transparent 85%);
     }
 
-    ::selection {
-      color: white;
-      background: #a90000;
+    ::selection { color: white; background: var(--accent-dark); }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    img { max-width: 100%; }
+    button:focus-visible, a:focus-visible, input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    .wrap { width: min(var(--max-width), calc(100% - 40px)); margin-inline: auto; }
 
-    button {
-      color: inherit;
-      font: inherit;
-    }
-
-    button, a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    img {
-      max-width: 100%;
-    }
-
-    .wrap {
-      width: min(var(--max-width), calc(100% - 40px));
-      margin-inline: auto;
-    }
-
-    /* Mouse-following background glow */
+    /* Background effects */
 
     #mouseGlow {
       position: fixed;
@@ -103,27 +89,26 @@
       top: 0;
       border-radius: 50%;
       pointer-events: none;
-      opacity: .75;
-      background: radial-gradient(
-        circle,
-        rgba(255, 25, 25, .085),
-        rgba(130, 0, 0, .035) 42%,
-        transparent 70%
-      );
-      transform: translate(-50%, -50%);
+      opacity: .8;
+      background: radial-gradient(circle, var(--glow), transparent 70%);
+      transform: translate(-50%,-50%);
       will-change: left, top;
     }
 
-    /* Custom cursor */
-
-    .custom-cursor {
-      display: none;
+    #particles {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .48;
     }
 
+    .custom-cursor, .cursor-ring { display: none; }
+
     @media (pointer: fine) {
-      body, a, button {
-        cursor: none !important;
-      }
+      body, a, button { cursor: none !important; }
 
       .custom-cursor {
         display: block;
@@ -136,60 +121,45 @@
         border-radius: 50%;
         pointer-events: none;
         opacity: 0;
-        transform: translate(-50%, -50%);
-        background: radial-gradient(circle, white 0%, #ff5b5b 30%, #ff2020 65%, transparent 100%);
-        box-shadow: 0 0 15px #ff202099, 0 0 35px #ff202044;
-        transition:
-          width .2s ease,
-          height .2s ease,
-          opacity .2s ease,
-          box-shadow .2s ease;
+        transform: translate(-50%,-50%);
+        background: radial-gradient(circle, white, var(--accent) 55%, transparent 100%);
+        box-shadow: 0 0 15px var(--accent), 0 0 35px var(--glow);
+        transition: width .2s, height .2s, opacity .2s;
       }
 
-      .custom-cursor.visible {
-        opacity: 1;
-      }
+      .custom-cursor.visible { opacity: 1; }
 
       .custom-cursor.hovering {
         width: 42px;
         height: 42px;
-        background: radial-gradient(circle, #ffffff55 0%, #ff353555 30%, #ff202033 65%, transparent 100%);
-        border: 1px solid #ff555577;
-        box-shadow: 0 0 24px #ff202066, 0 0 55px #ff202022;
+        background: radial-gradient(circle, var(--glow), transparent);
+        border: 1px solid var(--accent);
+        box-shadow: 0 0 24px var(--glow);
       }
 
       .cursor-ring {
+        display: block;
         position: fixed;
         z-index: 999998;
         width: 35px;
         height: 35px;
         top: 0;
         left: 0;
-        border: 1px solid rgba(255, 70, 70, .4);
+        border: 1px solid var(--line);
         border-radius: 50%;
         pointer-events: none;
         opacity: 0;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%,-50%);
         transition: width .25s, height .25s, opacity .2s;
       }
 
-      .cursor-ring.visible {
-        opacity: 1;
-      }
-
-      .cursor-ring.hovering {
-        width: 55px;
-        height: 55px;
-      }
+      .cursor-ring.visible { opacity: 1; }
+      .cursor-ring.hovering { width: 55px; height: 55px; }
     }
 
     @media (pointer: coarse) {
-      #mouseGlow {
-        display: none;
-      }
+      #mouseGlow, #particles { display: none; }
     }
-
-    /* Scroll progress */
 
     .scroll-progress {
       position: fixed;
@@ -197,8 +167,8 @@
       z-index: 10001;
       height: 3px;
       width: 0%;
-      background: linear-gradient(90deg, #750000, #ff2020, #ff8888);
-      box-shadow: 0 0 12px #ff202077;
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent), #fff);
+      box-shadow: 0 0 12px var(--accent);
     }
 
     /* Navigation */
@@ -212,7 +182,7 @@
     }
 
     .site-header.scrolled {
-      background: rgba(8, 8, 8, .82);
+      background: rgba(8,8,8,.84);
       border-color: var(--line);
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
@@ -223,30 +193,24 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 25px;
+      gap: 22px;
     }
 
-    .brand {
+    .brand, .footer-brand {
       flex-shrink: 0;
       font-size: 1.5rem;
       font-weight: 900;
       letter-spacing: -.09em;
     }
 
-    .brand span {
-      color: var(--accent);
-    }
+    .brand span, .footer-brand span { color: var(--accent); }
 
-    .navlinks {
-      display: flex;
-      align-items: center;
-      gap: 27px;
-    }
+    .navlinks { display: flex; align-items: center; gap: 25px; }
 
     .navlinks a {
       position: relative;
       color: var(--muted);
-      font-size: .87rem;
+      font-size: .85rem;
       font-weight: 600;
       transition: color .2s;
     }
@@ -263,25 +227,30 @@
       transition: width .25s;
     }
 
-    .navlinks a:hover,
-    .navlinks a.active {
-      color: white;
-    }
+    .navlinks a:hover, .navlinks a.active { color: white; }
+    .navlinks a:hover::after, .navlinks a.active::after { width: 100%; }
 
-    .navlinks a:hover::after,
-    .navlinks a.active::after {
-      width: 100%;
-    }
+    .nav-tools { display: flex; align-items: center; gap: 10px; }
 
-    .menu-toggle {
-      display: none;
-      width: 42px;
+    .icon-button, .menu-toggle {
+      display: grid;
+      place-items: center;
+      min-width: 42px;
       height: 42px;
+      padding: 0 11px;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: var(--panel);
-      font-size: 1.3rem;
+      color: var(--text);
+      transition: .2s;
     }
+
+    .icon-button:hover, .menu-toggle:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .menu-toggle { display: none; font-size: 1.2rem; }
 
     /* Buttons */
 
@@ -295,47 +264,35 @@
       overflow: hidden;
       border: 1px solid transparent;
       border-radius: 12px;
-      background: linear-gradient(115deg, #ff3030, #a60000 65%, #650000);
+      background: linear-gradient(115deg, var(--accent), var(--accent-dark) 70%);
       color: white;
       font-size: .9rem;
       font-weight: 750;
+      box-shadow: 0 7px 28px var(--glow);
       transition: transform .25s, box-shadow .25s, border-color .25s;
-      box-shadow: 0 7px 28px rgba(255, 25, 25, .13);
     }
 
     .pill::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(110deg, transparent 20%, #ffffff30 50%, transparent 80%);
+      background: linear-gradient(110deg, transparent 20%, #ffffff35 50%, transparent 80%);
       transform: translateX(-120%);
       transition: transform .65s;
     }
 
-    .pill:hover::before {
-      transform: translateX(120%);
-    }
-
-    .pill:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 35px rgba(255, 25, 25, .27);
-    }
+    .pill:hover::before { transform: translateX(120%); }
+    .pill:hover { transform: translateY(-3px); box-shadow: 0 10px 35px var(--glow); }
+    .pill span { position: relative; }
 
     .pill.secondary {
-      background: rgba(255, 255, 255, .035);
+      background: rgba(255,255,255,.035);
       border-color: var(--line);
       color: #eee;
       box-shadow: none;
     }
 
-    .pill.secondary:hover {
-      border-color: #ff393966;
-      background: rgba(255, 35, 35, .07);
-    }
-
-    .pill span {
-      position: relative;
-    }
+    .pill.secondary:hover { border-color: var(--accent); background: var(--glow); }
 
     /* Hero */
 
@@ -343,7 +300,7 @@
       position: relative;
       display: flex;
       min-height: 670px;
-      padding: 120px 0 100px;
+      padding: 110px 0 100px;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -358,7 +315,7 @@
       width: min(650px, 90vw);
       height: 360px;
       transform: translateX(-50%);
-      background: radial-gradient(ellipse, rgba(150, 0, 0, .12), transparent 68%);
+      background: radial-gradient(ellipse, var(--glow), transparent 68%);
       pointer-events: none;
       z-index: -1;
     }
@@ -368,13 +325,12 @@
       align-items: center;
       gap: 10px;
       padding: 8px 14px;
-      border: 1px solid rgba(255, 55, 55, .2);
+      border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(255, 25, 25, .045);
+      background: var(--glow);
       color: #e8b4b4;
       font-size: .78rem;
       font-weight: 600;
-      letter-spacing: .015em;
     }
 
     .dot {
@@ -382,14 +338,12 @@
       height: 7px;
       flex-shrink: 0;
       border-radius: 50%;
-      background: #ff3030;
-      box-shadow: 0 0 12px #ff2020;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
       animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      50% { box-shadow: 0 0 3px #ff2020; opacity: .55; }
-    }
+    @keyframes pulse { 50% { opacity: .5; } }
 
     h1 {
       margin: 30px 0 23px;
@@ -400,7 +354,7 @@
     }
 
     .gradient {
-      background: linear-gradient(110deg, #fff 15%, #ffb6b6 45%, #ff2929 72%, #7d0000 100%);
+      background: linear-gradient(110deg, #fff 15%, #ffb6b6 45%, var(--accent) 72%, var(--accent-dark));
       background-size: 200% auto;
       background-clip: text;
       -webkit-background-clip: text;
@@ -408,28 +362,11 @@
       animation: gradientShift 7s linear infinite;
     }
 
-    @keyframes gradientShift {
-      to { background-position: 200% center; }
-    }
+    @keyframes gradientShift { to { background-position: 200% center; } }
 
-    .hero-description {
-      max-width: 600px;
-      color: var(--muted);
-      font-size: clamp(1rem, 2vw, 1.12rem);
-    }
-
-    .hero-description strong {
-      color: #eee;
-      font-weight: 600;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 31px;
-    }
+    .hero-description { max-width: 600px; color: var(--muted); font-size: clamp(1rem,2vw,1.12rem); }
+    .hero-description strong { color: #eee; font-weight: 600; }
+    .actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 31px; }
 
     .hero-meta {
       display: flex;
@@ -437,23 +374,22 @@
       justify-content: center;
       flex-wrap: wrap;
       gap: 13px;
-      margin-top: 28px;
-      color: #74747e;
+      margin-top: 25px;
+      color: #85858f;
       font-size: .76rem;
     }
 
-    .hero-meta span {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
+    .hero-meta span { display: inline-flex; align-items: center; gap: 7px; }
+    .meta-divider { width: 3px; height: 3px; border-radius: 50%; background: #555; }
+
+    .live-time {
+      margin-top: 17px;
+      color: #85858f;
+      font-size: .78rem;
+      letter-spacing: .03em;
     }
 
-    .meta-divider {
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: #555;
-    }
+    .live-time strong { color: var(--text); font-weight: 600; }
 
     .scroll-cue {
       position: absolute;
@@ -469,69 +405,41 @@
       text-transform: uppercase;
     }
 
-    .scroll-cue span {
-      animation: nudge 1.5s infinite;
-    }
+    .scroll-cue span { animation: nudge 1.5s infinite; }
+    @keyframes nudge { 50% { transform: translateY(5px); } }
 
-    @keyframes nudge {
-      50% { transform: translateY(5px); }
-    }
+    /* Sections */
 
-    /* General sections */
+    section.content-section { padding: 75px 0; }
 
-    section.content-section {
-      padding: 75px 0;
-    }
+    .section-head { margin-bottom: 32px; text-align: center; }
+    .section-kicker { margin-bottom: 8px; color: var(--accent); font-size: .74rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
 
-    .section-head {
-      margin-bottom: 32px;
-      text-align: center;
-    }
-
-    .section-kicker {
-      margin-bottom: 8px;
-      color: #ff6969;
-      font-size: .74rem;
-      font-weight: 800;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-    }
-
-    .section-head h2,
-    .section-title {
-      font-size: clamp(2rem, 5vw, 3rem);
+    .section-head h2, .section-title {
+      font-size: clamp(2rem,5vw,3rem);
       font-weight: 850;
       letter-spacing: -.07em;
       line-height: 1.2;
     }
 
-    .section-head p,
-    .section-description {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: .94rem;
-    }
-
-    .section-title {
-      text-align: center;
-    }
-
-    .section-description {
-      margin-bottom: 30px;
-      text-align: center;
-    }
+    .section-head p, .section-description { margin-top: 10px; color: var(--muted); font-size: .94rem; }
+    .section-title { text-align: center; }
+    .section-description { margin-bottom: 30px; text-align: center; }
 
     .text-gradient {
-      background: linear-gradient(90deg, #fff, #ff5555);
+      background: linear-gradient(90deg, #fff, var(--accent));
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
     }
 
-    /* Glass cards */
+    /* Cards with mouse-following spotlight */
 
     .card {
+      position: relative;
       min-width: 0;
+      isolation: isolate;
+      overflow: hidden;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--panel);
@@ -540,21 +448,31 @@
       transition: border-color .3s, transform .3s, background .3s, box-shadow .3s;
     }
 
+    .card::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        350px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+        var(--glow),
+        transparent 70%
+      );
+      transition: opacity .3s;
+    }
+
+    .card:hover::before { opacity: 1; }
+
     .card:hover {
-      border-color: rgba(255, 55, 55, .4);
-      background: rgba(23, 15, 15, .92);
-      box-shadow: 0 15px 55px rgba(0, 0, 0, .18);
+      border-color: var(--accent);
+      box-shadow: 0 15px 55px rgba(0,0,0,.2), 0 0 28px var(--glow);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 17px;
-    }
+    .grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 17px; }
 
-    .feature-card {
-      padding: 27px;
-    }
+    .feature-card, .community-card { padding: 27px; }
 
     .feature-icon {
       display: grid;
@@ -562,28 +480,20 @@
       width: 49px;
       height: 49px;
       margin-bottom: 21px;
-      border: 1px solid rgba(255, 55, 55, .19);
+      border: 1px solid var(--line);
       border-radius: 15px;
-      background: linear-gradient(145deg, rgba(255, 30, 30, .16), rgba(100, 0, 0, .08));
-      color: #ff7777;
+      background: var(--glow);
+      color: var(--accent);
       font-size: 1.35rem;
-      transition: transform .3s, background .3s;
+      transition: transform .3s;
     }
 
-    .feature-card:hover .feature-icon {
+    .feature-card:hover .feature-icon, .community-card:hover .feature-icon {
       transform: translateY(-4px) rotate(-4deg);
-      background: rgba(255, 30, 30, .22);
     }
 
-    .feature-card h3 {
-      margin-bottom: 8px;
-      font-size: 1.04rem;
-    }
-
-    .feature-card p {
-      color: var(--muted);
-      font-size: .89rem;
-    }
+    .feature-card h3, .community-card h3 { margin-bottom: 8px; font-size: 1.04rem; }
+    .feature-card p, .community-card p { color: var(--muted); font-size: .89rem; }
 
     /* Profile */
 
@@ -599,8 +509,8 @@
     }
 
     .profile-card:hover {
-      border-color: #7d2424;
-      box-shadow: 0 25px 90px rgba(150, 0, 0, .12);
+      border-color: var(--accent);
+      box-shadow: 0 25px 90px var(--glow);
       transform: translateY(-3px);
     }
 
@@ -608,9 +518,8 @@
       position: relative;
       height: 155px;
       overflow: hidden;
-      background:
-        radial-gradient(ellipse at 50% 120%, #9b0000 0%, transparent 65%),
-        linear-gradient(125deg, #080808, #2b0000 55%, #101010);
+      background: radial-gradient(ellipse at 50% 120%, var(--accent-dark), transparent 65%),
+                  linear-gradient(125deg, #080808, #260000 55%, #101010);
     }
 
     .profile-banner::before {
@@ -618,9 +527,9 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%,-50%);
       color: #ffffff09;
-      font-size: clamp(4rem, 12vw, 7rem);
+      font-size: clamp(4rem,12vw,7rem);
       font-weight: 900;
       letter-spacing: -.1em;
     }
@@ -631,15 +540,12 @@
       height: 220px;
       right: -30px;
       top: -110px;
-      border: 1px solid #ff373722;
+      border: 1px solid var(--line);
       border-radius: 50%;
-      box-shadow: 0 0 0 25px #ff373708, 0 0 0 50px #ff373705;
+      box-shadow: 0 0 0 25px var(--glow);
     }
 
-    .profile-content {
-      position: relative;
-      padding: 0 25px 27px;
-    }
+    .profile-content { position: relative; padding: 0 25px 27px; }
 
     .profile-top {
       display: flex;
@@ -662,19 +568,8 @@
       box-shadow: 0 4px 25px #0008;
     }
 
-    .profile-name {
-      font-size: 2rem;
-      font-weight: 850;
-      letter-spacing: -.065em;
-      overflow-wrap: anywhere;
-      line-height: 1.2;
-    }
-
-    .profile-sub {
-      margin-top: 5px;
-      color: #a1a1aa;
-      font-size: .87rem;
-    }
+    .profile-name { font-size: 2rem; font-weight: 850; letter-spacing: -.065em; overflow-wrap: anywhere; line-height: 1.2; }
+    .profile-sub { margin-top: 5px; color: #a1a1aa; font-size: .87rem; }
 
     .profile-badge {
       display: inline-flex;
@@ -682,23 +577,17 @@
       gap: 6px;
       margin-top: 7px;
       padding: 4px 8px;
-      border: 1px solid #ff333325;
+      border: 1px solid var(--line);
       border-radius: 7px;
-      background: #ff20200d;
-      color: #ff9292;
+      background: var(--glow);
+      color: var(--accent);
       font-size: .68rem;
       font-weight: 700;
     }
 
-    .profile-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-bottom: 23px;
-    }
+    .profile-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 23px; }
 
-    .profile-actions a,
-    .profile-actions button {
+    .profile-actions a, .profile-actions button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -713,36 +602,19 @@
       transition: .25s;
     }
 
-    .profile-actions .discord-button {
-      border-color: transparent;
-      background: #5865f2;
-    }
+    .profile-actions .discord-button { border-color: transparent; background: #5865f2; }
 
-    .profile-actions a:hover,
-    .profile-actions button:hover {
-      border-color: #ff393955;
-      background: #3a1818;
+    .profile-actions a:hover, .profile-actions button:hover {
+      border-color: var(--accent);
+      background: #351616;
       transform: translateY(-2px);
     }
 
-    .profile-actions .discord-button:hover {
-      background: #4752c4;
-    }
+    .profile-actions .discord-button:hover { background: #4752c4; }
 
-    .profile-label {
-      margin: 19px 0 10px;
-      color: #a7a7b0;
-      font-size: .71rem;
-      font-weight: 800;
-      letter-spacing: .13em;
-      text-transform: uppercase;
-    }
+    .profile-label { margin: 19px 0 10px; color: #a7a7b0; font-size: .71rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 
-    .social-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
+    .social-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
 
     .social-link {
       display: flex;
@@ -756,11 +628,7 @@
       transition: .25s;
     }
 
-    .social-link:hover {
-      transform: translateY(-2px);
-      border-color: #a52a2a;
-      background: #281616;
-    }
+    .social-link:hover { transform: translateY(-2px); border-color: var(--accent); background: #281616; }
 
     .social-icon {
       display: grid;
@@ -774,28 +642,10 @@
       font-weight: 800;
     }
 
-    .social-info {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .social-info strong {
-      font-size: .79rem;
-    }
-
-    .social-info span {
-      overflow: hidden;
-      color: #8f8f99;
-      font-size: .68rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .social-arrow {
-      margin-left: auto;
-      color: #777;
-    }
+    .social-info { display: flex; flex-direction: column; min-width: 0; }
+    .social-info strong { font-size: .79rem; }
+    .social-info span { overflow: hidden; color: #8f8f99; font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
+    .social-arrow { margin-left: auto; color: #777; }
 
     .member-since {
       display: flex;
@@ -809,16 +659,13 @@
       font-size: .77rem;
     }
 
-    .member-since strong {
-      color: #d5d5db;
-      font-weight: 600;
-    }
+    .member-since strong { color: #d5d5db; font-weight: 600; }
 
     /* Gaming */
 
     .game-card {
       display: grid;
-      grid-template-columns: 230px minmax(0, 1fr);
+      grid-template-columns: 230px minmax(0,1fr);
       max-width: 850px;
       margin: 0 auto;
       overflow: hidden;
@@ -830,88 +677,53 @@
       min-height: 270px;
       place-items: center;
       overflow: hidden;
-      background:
-        radial-gradient(ellipse at center, #710000 0%, transparent 65%),
-        linear-gradient(145deg, #260000, #090909 80%);
+      background: radial-gradient(ellipse at center, var(--accent-dark), transparent 65%),
+                  linear-gradient(145deg, #260000, #090909 80%);
     }
 
-    .game-art::before,
-    .game-art::after {
+    .game-art::before, .game-art::after {
       content: "";
       position: absolute;
       width: 175px;
       height: 175px;
-      border: 1px solid #ff3b3b28;
+      border: 1px solid var(--line);
       border-radius: 50%;
     }
 
-    .game-art::after {
-      width: 230px;
-      height: 230px;
-      border-color: #ff3b3b15;
-    }
+    .game-art::after { width: 230px; height: 230px; }
 
     .game-art-icon {
       position: relative;
       z-index: 1;
       font-size: 5rem;
-      filter: drop-shadow(0 0 24px #ff222255);
+      filter: drop-shadow(0 0 24px var(--glow));
       transition: transform .4s;
     }
 
-    .game-card:hover .game-art-icon {
-      transform: scale(1.1) rotate(-7deg);
-    }
+    .game-card:hover .game-art-icon { transform: scale(1.1) rotate(-7deg); }
 
-    .game-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 30px;
-    }
+    .game-info { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 30px; }
 
     .tag {
       display: inline-flex;
       padding: 5px 9px;
-      border: 1px solid #ff37372b;
+      border: 1px solid var(--line);
       border-radius: 7px;
-      background: #ff27270d;
-      color: #ff8989;
+      background: var(--glow);
+      color: var(--accent);
       font-size: .68rem;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
 
-    .game-info h3 {
-      margin: 14px 0 9px;
-      font-size: 1.65rem;
-      letter-spacing: -.05em;
-    }
-
-    .game-info p {
-      margin-bottom: 22px;
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
-    .game-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 13px;
-      margin-bottom: 22px;
-      color: #a7a7b0;
-      font-size: .76rem;
-    }
+    .game-info h3 { margin: 14px 0 9px; font-size: 1.65rem; letter-spacing: -.05em; }
+    .game-info p { margin-bottom: 22px; color: var(--muted); font-size: .9rem; }
+    .game-meta { display: flex; flex-wrap: wrap; gap: 13px; margin-bottom: 22px; color: #a7a7b0; font-size: .76rem; }
 
     /* About */
 
-    .about {
-      display: grid;
-      grid-template-columns: .85fr 1.15fr;
-      gap: 17px;
-    }
+    .about { display: grid; grid-template-columns: .85fr 1.15fr; gap: 17px; }
 
     .about-big {
       display: flex;
@@ -919,10 +731,7 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 30px;
-      overflow: hidden;
-      background:
-        radial-gradient(ellipse at 100% 0%, #6f00002a, transparent 60%),
-        var(--panel);
+      background: radial-gradient(ellipse at 100% 0%, var(--glow), transparent 60%), var(--panel);
     }
 
     .about-monogram {
@@ -930,96 +739,34 @@
       width: 66px;
       height: 66px;
       place-items: center;
-      border: 1px solid #ff49493b;
+      border: 1px solid var(--line);
       border-radius: 20px;
-      background: linear-gradient(135deg, #ff3838, #790000);
-      box-shadow: 0 12px 35px #ff20201a;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      box-shadow: 0 12px 35px var(--glow);
       color: white;
       font-size: 2rem;
       font-weight: 900;
       letter-spacing: -.1em;
     }
 
-    .about-big h2 {
-      margin: 20px 0 9px;
-      font-size: 2rem;
-      letter-spacing: -.065em;
-    }
+    .about-big h2 { margin: 20px 0 9px; font-size: 2rem; letter-spacing: -.065em; }
+    .about-big p, .about-details > p { color: var(--muted); font-size: .91rem; }
+    .about-details { padding: 30px; }
+    .about-details h3 { margin-bottom: 12px; font-size: 1.18rem; }
 
-    .about-big p,
-    .about-details > p {
-      color: var(--muted);
-      font-size: .91rem;
-    }
+    .values { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px; margin-top: 23px; }
 
-    .about-details {
-      padding: 30px;
-    }
-
-    .about-details h3 {
-      margin-bottom: 12px;
-      font-size: 1.18rem;
-      letter-spacing: -.025em;
-    }
-
-    .values {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 11px;
-      margin-top: 23px;
-    }
-
-    .value {
-      padding: 15px;
-      border: 1px solid #ffffff0c;
-      border-radius: 13px;
-      background: #ffffff03;
-      transition: background .2s, border-color .2s;
-    }
-
-    .value:hover {
-      border-color: var(--line);
-      background: #ff202008;
-    }
-
-    .value strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: .85rem;
-    }
-
-    .value span {
-      color: var(--muted);
-      font-size: .76rem;
-    }
+    .value { padding: 15px; border: 1px solid #ffffff0c; border-radius: 13px; background: #ffffff03; transition: .2s; }
+    .value:hover { border-color: var(--line); background: var(--glow); }
+    .value strong { display: block; margin-bottom: 4px; font-size: .85rem; }
+    .value span { color: var(--muted); font-size: .76rem; }
 
     /* Community */
 
-    .community-card {
-      padding: 27px;
-    }
-
-    .community-card .feature-icon {
-      margin-bottom: 20px;
-    }
-
-    .community-card h3 {
-      margin-bottom: 8px;
-      font-size: 1rem;
-    }
-
-    .community-card p {
-      color: var(--muted);
-      font-size: .88rem;
-    }
-
-    .card-number {
-      float: right;
-      color: #ffffff18;
-      font-size: 2rem;
-      font-weight: 900;
-      letter-spacing: -.07em;
-    }
+    .community-card { padding: 27px; }
+    .community-card .feature-icon { margin-bottom: 20px; }
+    .community-card h3 { font-size: 1rem; }
+    .card-number { float: right; color: #ffffff18; font-size: 2rem; font-weight: 900; letter-spacing: -.07em; }
 
     /* Join */
 
@@ -1027,107 +774,40 @@
       position: relative;
       padding: 70px 25px;
       overflow: hidden;
-      border: 1px solid #ff33332b;
+      border: 1px solid var(--line);
       border-radius: 26px;
-      background:
-        radial-gradient(ellipse at 50% 120%, #a0000033, transparent 65%),
-        linear-gradient(130deg, #1b0b0b, #0c0c0e 65%);
+      background: radial-gradient(ellipse at 50% 120%, var(--glow), transparent 65%),
+                  linear-gradient(130deg, #1b0b0b, #0c0c0e 65%);
       text-align: center;
     }
 
-    .join::before,
-    .join::after {
+    .join::before, .join::after {
       content: "";
       position: absolute;
       top: 50%;
       width: 220px;
       height: 220px;
-      border: 1px solid #ff393914;
+      border: 1px solid var(--line);
       border-radius: 50%;
       pointer-events: none;
     }
 
-    .join::before {
-      left: -140px;
-      transform: translateY(-50%);
-      box-shadow: 0 0 0 30px #ff393908, 0 0 0 60px #ff393905;
-    }
-
-    .join::after {
-      right: -140px;
-      transform: translateY(-50%);
-      box-shadow: 0 0 0 30px #ff393908, 0 0 0 60px #ff393905;
-    }
-
-    .join-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .join h2 {
-      font-size: clamp(2.1rem, 6vw, 3.4rem);
-      font-weight: 900;
-      letter-spacing: -.075em;
-      line-height: 1.2;
-    }
-
-    .join p {
-      max-width: 530px;
-      margin: 15px auto 26px;
-      color: var(--muted);
-      font-size: .94rem;
-    }
-
-    .join-note {
-      display: block;
-      margin-top: 15px;
-      color: #777;
-      font-size: .73rem;
-    }
+    .join::before { left: -140px; transform: translateY(-50%); box-shadow: 0 0 0 30px var(--glow); }
+    .join::after { right: -140px; transform: translateY(-50%); box-shadow: 0 0 0 30px var(--glow); }
+    .join-inner { position: relative; z-index: 1; }
+    .join h2 { font-size: clamp(2.1rem,6vw,3.4rem); font-weight: 900; letter-spacing: -.075em; line-height: 1.2; }
+    .join p { max-width: 530px; margin: 15px auto 26px; color: var(--muted); font-size: .94rem; }
+    .join-note { display: block; margin-top: 15px; color: #777; font-size: .73rem; }
 
     /* Footer */
 
-    footer {
-      margin-top: 35px;
-      border-top: 1px solid var(--line);
-      background: #090909;
-    }
+    footer { margin-top: 35px; border-top: 1px solid var(--line); background: #090909; }
 
-    .footer-main {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 30px;
-      padding: 38px 0 30px;
-    }
-
-    .footer-brand {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: -.08em;
-    }
-
-    .footer-brand span {
-      color: var(--accent);
-    }
-
-    .footer-description {
-      margin-top: 7px;
-      color: var(--muted);
-      font-size: .8rem;
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      color: #999;
-      font-size: .8rem;
-    }
-
-    .footer-links a:hover {
-      color: white;
-    }
+    .footer-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; padding: 38px 0 30px; }
+    .footer-brand { font-size: 1.4rem; }
+    .footer-description { margin-top: 7px; color: var(--muted); font-size: .8rem; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 18px; color: #999; font-size: .8rem; }
+    .footer-links a:hover { color: white; }
 
     .footer-bottom {
       display: flex;
@@ -1149,9 +829,9 @@
       width: 46px;
       height: 46px;
       place-items: center;
-      border: 1px solid #ff343444;
+      border: 1px solid var(--line);
       border-radius: 14px;
-      background: rgba(20, 12, 12, .9);
+      background: rgba(20,12,12,.9);
       color: white;
       font-size: 1.2rem;
       opacity: 0;
@@ -1161,18 +841,10 @@
       backdrop-filter: blur(12px);
     }
 
-    .back-top.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
+    .back-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-top:hover { border-color: var(--accent); background: var(--accent-dark); }
 
-    .back-top:hover {
-      border-color: #ff3939;
-      background: #320b0b;
-    }
-
-    /* Toast notifications */
+    /* Toasts */
 
     .toast {
       position: fixed;
@@ -1181,7 +853,7 @@
       left: 50%;
       max-width: calc(100% - 30px);
       padding: 12px 18px;
-      border: 1px solid #ff333344;
+      border: 1px solid var(--line);
       border-radius: 12px;
       background: #181010;
       color: #fff;
@@ -1189,73 +861,154 @@
       box-shadow: 0 10px 40px #0008;
       opacity: 0;
       pointer-events: none;
-      transform: translate(-50%, 15px);
+      transform: translate(-50%,15px);
       transition: .25s;
     }
 
-    .toast.visible {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
+    .toast.visible { opacity: 1; transform: translate(-50%,0); }
 
     /* Scroll reveal */
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1);
-    }
-
-    .reveal.in-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
     .delay-1 { transition-delay: .08s; }
     .delay-2 { transition-delay: .16s; }
     .delay-3 { transition-delay: .24s; }
 
-    /* Responsive layouts */
+    /* Command palette */
+
+    .palette-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      display: grid;
+      place-items: start center;
+      padding: min(18vh,140px) 18px 25px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .18s, visibility .18s;
+    }
+
+    .palette-backdrop.open { opacity: 1; visibility: visible; }
+
+    .palette {
+      width: min(540px,100%);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #111113;
+      box-shadow: 0 25px 100px #000b, 0 0 45px var(--glow);
+      transform: translateY(-10px) scale(.98);
+      transition: transform .18s;
+    }
+
+    .palette-backdrop.open .palette { transform: translateY(0) scale(1); }
+
+    .palette-top { display: flex; align-items: center; gap: 12px; padding: 15px; border-bottom: 1px solid #ffffff12; }
+
+    .palette-top input {
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: white;
+      font: inherit;
+      font-size: .95rem;
+    }
+
+    .palette-top kbd, kbd {
+      padding: 3px 6px;
+      border: 1px solid #ffffff20;
+      border-radius: 6px;
+      color: #999;
+      font-size: .7rem;
+      white-space: nowrap;
+    }
+
+    .palette-label { padding: 13px 16px 7px; color: #777; font-size: .68rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+
+    .command-list { display: grid; gap: 4px; padding: 5px 8px 12px; }
+
+    .command-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent;
+      color: #e8e8ed;
+      text-align: left;
+      transition: .15s;
+    }
+
+    .command-item:hover, .command-item:focus-visible {
+      border-color: var(--line);
+      background: var(--glow);
+      outline: none;
+    }
+
+    .command-symbol {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: #ffffff0a;
+      color: var(--accent);
+    }
+
+    .command-text { display: flex; flex: 1; flex-direction: column; }
+    .command-text strong { font-size: .84rem; }
+    .command-text small { color: #888; font-size: .72rem; }
+    .command-arrow { color: #777; }
+    .command-empty { padding: 20px; color: #888; text-align: center; font-size: .85rem; }
+    .palette-footer { display: flex; gap: 15px; padding: 12px 15px; border-top: 1px solid #ffffff12; color: #777; font-size: .7rem; }
+
+    .palette-hint {
+      position: fixed;
+      z-index: 800;
+      right: 24px;
+      bottom: 83px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(15,15,15,.85);
+      color: #aaa;
+      font-size: .72rem;
+      opacity: .85;
+      backdrop-filter: blur(10px);
+      transition: opacity .2s;
+    }
+
+    .palette-hint:hover { opacity: 1; }
+    .palette-hint kbd { color: #ddd; }
+
+    /* Responsive */
 
     @media (max-width: 850px) {
-      .navlinks { gap: 16px; }
-      .navlinks a { font-size: .8rem; }
+      .navlinks { gap: 14px; }
+      .navlinks a { font-size: .78rem; }
       .nav-cta { display: none; }
-
-      .hero {
-        min-height: 590px;
-        padding: 100px 0 90px;
-      }
-
-      .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .game-card {
-        grid-template-columns: 180px minmax(0, 1fr);
-      }
-
+      .hero { min-height: 590px; padding: 100px 0 90px; }
+      .grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .game-card { grid-template-columns: 180px minmax(0,1fr); }
       .game-art { min-height: 290px; }
-
-      .about {
-        grid-template-columns: 1fr;
-      }
-
+      .about { grid-template-columns: 1fr; }
       .about-big { min-height: 260px; }
     }
 
     @media (max-width: 620px) {
-      .wrap {
-        width: calc(100% - 30px);
-      }
-
+      .wrap { width: calc(100% - 30px); }
       nav { min-height: 72px; }
-
-      .menu-toggle {
-        display: grid;
-        place-items: center;
-      }
-
+      .menu-toggle { display: grid; }
+      .nav-tools { gap: 7px; }
       .navlinks {
         position: absolute;
         top: calc(100% + 1px);
@@ -1267,7 +1020,7 @@
         gap: 0;
         padding: 8px 15px 14px;
         border-bottom: 1px solid var(--line);
-        background: rgba(9, 9, 9, .97);
+        background: rgba(9,9,9,.97);
         backdrop-filter: blur(20px);
         opacity: 0;
         visibility: hidden;
@@ -1275,117 +1028,42 @@
         transition: .2s;
       }
 
-      .navlinks.open {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
-
-      .navlinks a {
-        padding: 12px 5px;
-        font-size: .9rem;
-      }
-
+      .navlinks.open { opacity: 1; visibility: visible; transform: translateY(0); }
+      .navlinks a { padding: 12px 5px; font-size: .9rem; }
       .navlinks a::after { display: none; }
-
-      .hero {
-        min-height: 570px;
-        padding: 85px 0 85px;
-      }
-
-      h1 {
-        font-size: clamp(3.15rem, 14vw, 5.3rem);
-      }
-
-      .hero-description {
-        max-width: 420px;
-        font-size: .96rem;
-      }
-
-      .actions {
-        width: 100%;
-      }
-
-      .actions .pill {
-        padding: 12px 14px;
-        font-size: .83rem;
-      }
-
-      section.content-section {
-        padding: 54px 0;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .feature-card,
-      .community-card {
-        padding: 22px;
-      }
-
-      .game-card {
-        grid-template-columns: 1fr;
-      }
-
-      .game-art {
-        min-height: 180px;
-      }
-
+      .hero { min-height: 570px; padding: 85px 0; }
+      h1 { font-size: clamp(3.15rem,14vw,5.3rem); }
+      .hero-description { max-width: 420px; font-size: .96rem; }
+      .actions { width: 100%; }
+      .actions .pill { padding: 12px 14px; font-size: .83rem; }
+      section.content-section { padding: 54px 0; }
+      .grid { grid-template-columns: 1fr; gap: 12px; }
+      .feature-card, .community-card { padding: 22px; }
+      .game-card { grid-template-columns: 1fr; }
+      .game-art { min-height: 180px; }
       .game-art-icon { font-size: 4rem; }
-
       .game-info { padding: 23px; }
-
-      .about-details,
-      .about-big {
-        padding: 23px;
-      }
-
-      .profile-content {
-        padding-inline: 17px;
-      }
-
-      .profile-picture {
-        width: 88px;
-        height: 88px;
-        flex-basis: 88px;
-      }
-
-      .profile-top {
-        gap: 12px;
-        margin-top: -40px;
-      }
-
+      .about-details, .about-big { padding: 23px; }
+      .profile-content { padding-inline: 17px; }
+      .profile-picture { width: 88px; height: 88px; flex-basis: 88px; }
+      .profile-top { gap: 12px; margin-top: -40px; }
       .profile-name { font-size: 1.65rem; }
-
-      .social-list {
-        grid-template-columns: 1fr;
-      }
-
+      .social-list { grid-template-columns: 1fr; }
       .join { padding: 55px 18px; }
-
       .join::before { left: -175px; }
       .join::after { right: -175px; }
-
-      .footer-main {
-        flex-direction: column;
-        gap: 22px;
-      }
-
-      .back-top {
-        right: 15px;
-        bottom: 15px;
-      }
+      .footer-main { flex-direction: column; gap: 22px; }
+      .back-top { right: 15px; bottom: 15px; }
+      .palette-hint { right: 15px; bottom: 70px; }
     }
 
     @media (max-width: 380px) {
       .wrap { width: calc(100% - 24px); }
       .eyebrow { font-size: .68rem; }
-      .profile-actions a,
-      .profile-actions button { padding: 9px 10px; font-size: .75rem; }
+      .profile-actions a, .profile-actions button { padding: 9px 10px; font-size: .75rem; }
       .values { grid-template-columns: 1fr; }
       .hero-meta { gap: 8px; }
+      .palette-hint { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1395,17 +1073,15 @@
         animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
       }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
+      .reveal { opacity: 1; transform: none; }
+      #particles { display: none; }
     }
   </style>
 </head>
 
 <body>
   <div class="scroll-progress" id="scrollProgress"></div>
+  <canvas id="particles" aria-hidden="true"></canvas>
   <div id="mouseGlow" aria-hidden="true"></div>
   <div class="custom-cursor" id="customCursor" aria-hidden="true"></div>
   <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
@@ -1421,32 +1097,24 @@
           <a href="#game">Gaming</a>
           <a href="#about">About</a>
           <a href="#community">Community</a>
+          <a href="#join">Join</a>
         </div>
 
-        <a class="pill nav-cta" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">
-          Join Discord <span>↗</span>
-        </a>
-
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
-          ☰
-        </button>
+        <div class="nav-tools">
+          <button class="icon-button" id="themeToggle" type="button" aria-label="Switch color theme" title="Switch red/purple theme">◐</button>
+          <button class="icon-button" id="openPalette" type="button" aria-label="Open quick navigation" title="Quick navigation">⌕</button>
+          <a class="pill nav-cta" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">Join Discord <span>↗</span></a>
+          <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">☰</button>
+        </div>
       </nav>
     </div>
   </header>
 
   <main>
-    <!-- HERO -->
-
     <section class="hero wrap" id="home">
-      <div class="eyebrow reveal">
-        <span class="dot"></span>
-        Welcome to my corner of the internet
-      </div>
+      <div class="eyebrow reveal"><span class="dot"></span> Welcome to my corner of the internet</div>
 
-      <h1 class="reveal delay-1">
-        hey, i'm<br>
-        <span class="gradient">ookwa.</span>
-      </h1>
+      <h1 class="reveal delay-1">hey, i'm<br><span class="gradient">ookwa.</span></h1>
 
       <p class="hero-description reveal delay-2">
         Gaming, online communities, and doing my own thing.
@@ -1454,9 +1122,7 @@
       </p>
 
       <div class="actions reveal delay-2">
-        <a class="pill" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">
-          Join my Discord <span>↗</span>
-        </a>
+        <a class="pill" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">Join my Discord <span>↗</span></a>
         <a class="pill secondary" href="#profile">Explore my profile ↓</a>
       </div>
 
@@ -1468,12 +1134,14 @@
         <span>Made by ookwa</span>
       </div>
 
-      <a href="#profile" class="scroll-cue" aria-label="Scroll to profile">
-        Scroll to explore <span>↓</span>
-      </a>
-    </section>
+      <div class="live-time reveal delay-3">
+        Your local time: <strong id="liveClock">Loading...</strong>
+        <span aria-hidden="true"> · </span>
+        <span id="liveDate">Loading date...</span>
+      </div>
 
-    <!-- PROFILE -->
+      <a href="#profile" class="scroll-cue" aria-label="Scroll to profile">Scroll to explore <span>↓</span></a>
+    </section>
 
     <section class="content-section wrap" id="profile">
       <div class="section-head reveal">
@@ -1483,18 +1151,14 @@
       </div>
 
       <div class="profile-card reveal">
-        <div class="profile-banner">
-          <div class="banner-orb"></div>
-        </div>
+        <div class="profile-banner"><div class="banner-orb"></div></div>
 
         <div class="profile-content">
           <div class="profile-top">
-            <img
-              class="profile-picture"
+            <img class="profile-picture"
               alt="ookwa profile picture"
               src="https://media.discordapp.net/attachments/1557470309479882873/1557486392102363136/7d637a684bf69fd3c99462b01a381222.webp?backend=b2&ex=6ad1dcfc&is=6ad08b7c&hm=3d573c2258bffd417a56ac7eb2a7bd4f0f122933a052021643cf1850b53d0cb6&=&format=webp&width=535&height=640"
-              loading="lazy"
-            >
+              loading="lazy">
           </div>
 
           <div class="profile-name">ookwa</div>
@@ -1502,53 +1166,35 @@
           <div class="profile-badge">✦ Official profile</div>
 
           <div class="profile-label">Connect with me</div>
-
           <div class="profile-actions">
-            <a class="discord-button" href="https://discord.com/users/1420765933177278565" target="_blank" rel="noopener noreferrer">
-              ♡ Discord profile ↗
-            </a>
-            <a href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">
-              Community ↗
-            </a>
+            <a class="discord-button" href="https://discord.com/users/1420765933177278565" target="_blank" rel="noopener noreferrer">♡ Discord profile ↗</a>
+            <a href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">Community ↗</a>
             <button id="copyUsername" type="button">Copy username</button>
           </div>
 
           <div class="profile-label">Find me elsewhere</div>
-
           <div class="social-list">
             <a class="social-link" href="https://guns.lol/ookwa" target="_blank" rel="noopener noreferrer">
               <div class="social-icon">↗</div>
-              <div class="social-info">
-                <strong>guns.lol</strong>
-                <span>guns.lol/ookwa</span>
-              </div>
+              <div class="social-info"><strong>guns.lol</strong><span>guns.lol/ookwa</span></div>
               <span class="social-arrow">↗</span>
             </a>
 
             <a class="social-link" href="https://x.com/missedcalls_0" target="_blank" rel="noopener noreferrer">
               <div class="social-icon">𝕏</div>
-              <div class="social-info">
-                <strong>X / Twitter</strong>
-                <span>@missedcalls_0</span>
-              </div>
+              <div class="social-info"><strong>X / Twitter</strong><span>@missedcalls_0</span></div>
               <span class="social-arrow">↗</span>
             </a>
 
             <a class="social-link" href="https://www.youtube.com/@ookwa-1" target="_blank" rel="noopener noreferrer">
               <div class="social-icon">▶</div>
-              <div class="social-info">
-                <strong>YouTube</strong>
-                <span>@ookwa-1</span>
-              </div>
+              <div class="social-info"><strong>YouTube</strong><span>@ookwa-1</span></div>
               <span class="social-arrow">↗</span>
             </a>
 
             <a class="social-link" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">
               <div class="social-icon">♧</div>
-              <div class="social-info">
-                <strong>Discord server</strong>
-                <span>Come hang out</span>
-              </div>
+              <div class="social-info"><strong>Discord server</strong><span>Come hang out</span></div>
               <span class="social-arrow">↗</span>
             </a>
           </div>
@@ -1561,8 +1207,6 @@
       </div>
     </section>
 
-    <!-- GAMING -->
-
     <section class="content-section wrap" id="game">
       <div class="section-head reveal">
         <div class="section-kicker">Press start</div>
@@ -1570,36 +1214,17 @@
         <p>Check out a game I enjoy.</p>
       </div>
 
-      <a
-        class="game-card card reveal"
-        href="https://www.roblox.com/games/116185111235520/Getbetters-MM2-3"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <div class="game-art">
-          <span class="game-art-icon">🎮</span>
-        </div>
-
+      <a class="game-card card reveal" href="https://www.roblox.com/games/116185111235520/Getbetters-MM2-3" target="_blank" rel="noopener noreferrer">
+        <div class="game-art"><span class="game-art-icon">🎮</span></div>
         <div class="game-info">
           <span class="tag">Featured game</span>
           <h3>Getbetter's MM2</h3>
-          <p>
-            Jump into Getbetter's MM2 on Roblox. Explore the game,
-            play with others, and see what's waiting for you.
-          </p>
-
-          <div class="game-meta">
-            <span>◈ Roblox</span>
-            <span>◈ Multiplayer</span>
-            <span>◈ Gaming</span>
-          </div>
-
+          <p>Jump into Getbetter's MM2 on Roblox. Explore the game, play with others, and see what's waiting for you.</p>
+          <div class="game-meta"><span>◈ Roblox</span><span>◈ Multiplayer</span><span>◈ Gaming</span></div>
           <span class="pill">Play on Roblox ↗</span>
         </div>
       </a>
     </section>
-
-    <!-- ABOUT -->
 
     <section class="content-section wrap" id="about">
       <div class="section-head reveal">
@@ -1611,50 +1236,25 @@
       <div class="about">
         <div class="about-big card reveal">
           <div class="about-monogram">o.</div>
-
           <div>
             <h2>About ookwa</h2>
-            <p>
-              Just me, doing my thing, gaming, connecting with people,
-              and building a place for the community.
-            </p>
+            <p>Just me, doing my thing, gaming, connecting with people, and building a place for the community.</p>
           </div>
         </div>
 
         <div class="about-details card reveal delay-1">
           <h3>A place to connect.</h3>
-          <p>
-            This website brings my online world together.
-            Check out my socials, explore my gaming interests,
-            and join the community if you want to hang out.
-          </p>
+          <p>This website brings my online world together. Check out my socials, explore my gaming interests, and join the community if you want to hang out.</p>
 
           <div class="values">
-            <div class="value">
-              <strong>✦ Meet people</strong>
-              <span>Connect and make friends.</span>
-            </div>
-
-            <div class="value">
-              <strong>⌘ Gaming</strong>
-              <span>Games, clips, and fun.</span>
-            </div>
-
-            <div class="value">
-              <strong>◇ Creativity</strong>
-              <span>Websites and online projects.</span>
-            </div>
-
-            <div class="value">
-              <strong>♡ Community</strong>
-              <span>Keep things friendly.</span>
-            </div>
+            <div class="value"><strong>✦ Meet people</strong><span>Connect and make friends.</span></div>
+            <div class="value"><strong>⌘ Gaming</strong><span>Games, clips, and fun.</span></div>
+            <div class="value"><strong>◇ Creativity</strong><span>Websites and online projects.</span></div>
+            <div class="value"><strong>♡ Community</strong><span>Keep things friendly.</span></div>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- COMMUNITY -->
 
     <section class="content-section wrap" id="community">
       <div class="section-head reveal">
@@ -1665,60 +1265,37 @@
 
       <div class="grid">
         <article class="community-card card reveal">
-          <span class="card-number">01</span>
-          <div class="feature-icon">☰</div>
+          <span class="card-number">01</span><div class="feature-icon">☰</div>
           <h3>Chat & connect</h3>
-          <p>
-            Join conversations, meet new people, and get involved
-            in the community.
-          </p>
+          <p>Join conversations, meet new people, and get involved in the community.</p>
         </article>
 
         <article class="community-card card reveal delay-1">
-          <span class="card-number">02</span>
-          <div class="feature-icon">◇</div>
+          <span class="card-number">02</span><div class="feature-icon">◇</div>
           <h3>Gaming & hobbies</h3>
-          <p>
-            Talk about your favorite games, share clips,
-            and find people to play with.
-          </p>
+          <p>Talk about your favorite games, share clips, and find people to play with.</p>
         </article>
 
         <article class="community-card card reveal delay-2">
-          <span class="card-number">03</span>
-          <div class="feature-icon">✦</div>
+          <span class="card-number">03</span><div class="feature-icon">✦</div>
           <h3>Events & updates</h3>
-          <p>
-            Keep an eye out for announcements, activities,
-            and community news.
-          </p>
+          <p>Keep an eye out for announcements, activities, and community news.</p>
         </article>
       </div>
     </section>
-
-    <!-- CALL TO ACTION -->
 
     <section class="content-section wrap" id="join">
       <div class="join reveal">
         <div class="join-inner">
           <div class="section-kicker">Your invitation</div>
           <h2>Let's make it <span class="text-gradient">happen.</span></h2>
-          <p>
-            Come say hi in the ookwa Discord community.
-            Meet people, join conversations, and make yourself at home.
-          </p>
-
-          <a class="pill" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">
-            Join ookwa's Discord ↗
-          </a>
-
+          <p>Come say hi in the ookwa Discord community. Meet people, join conversations, and make yourself at home.</p>
+          <a class="pill" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">Join ookwa's Discord ↗</a>
           <span class="join-note">Be respectful. Have fun. Enjoy your stay.</span>
         </div>
       </div>
     </section>
   </main>
-
-  <!-- FOOTER -->
 
   <footer>
     <div class="wrap">
@@ -1729,11 +1306,8 @@
         </div>
 
         <div class="footer-links">
-          <a href="#home">Home</a>
-          <a href="#profile">Profile</a>
-          <a href="#game">Gaming</a>
-          <a href="#about">About</a>
-          <a href="#community">Community</a>
+          <a href="#home">Home</a><a href="#profile">Profile</a><a href="#game">Gaming</a>
+          <a href="#about">About</a><a href="#community">Community</a>
           <a href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">Discord ↗</a>
         </div>
       </div>
@@ -1745,51 +1319,81 @@
     </div>
   </footer>
 
-  <button class="back-top" id="backTop" aria-label="Back to top" title="Back to top">
-    ↑
+  <button class="back-top" id="backTop" aria-label="Back to top" title="Back to top">↑</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <button class="palette-hint" id="paletteHint" type="button" aria-label="Open quick navigation">
+    Quick menu <kbd>Ctrl</kbd> <kbd>K</kbd>
   </button>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <!-- Quick navigation menu -->
+  <div class="palette-backdrop" id="paletteBackdrop" aria-hidden="true">
+    <div class="palette" role="dialog" aria-modal="true" aria-label="Quick navigation">
+      <div class="palette-top">
+        <span aria-hidden="true">⌕</span>
+        <input id="paletteSearch" type="text" placeholder="Search pages and actions..." autocomplete="off" aria-label="Search commands">
+        <kbd>ESC</kbd>
+      </div>
+      <div class="palette-label">Navigate</div>
+      <div class="command-list" id="commandList"></div>
+      <div class="palette-footer"><span>↵ Open selection</span><span>↑ ↓ Browse</span><span>Esc Close</span></div>
+    </div>
+  </div>
 
   <script>
     // Current year
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    // Live local clock and date
+    const liveClock = document.getElementById("liveClock");
+    const liveDate = document.getElementById("liveDate");
+
+    function updateClock() {
+      const now = new Date();
+      liveClock.textContent = now.toLocaleTimeString([], {
+        hour: "2-digit", minute: "2-digit", second: "2-digit"
+      });
+      liveDate.textContent = now.toLocaleDateString([], {
+        weekday: "short", month: "short", day: "numeric", year: "numeric"
+      });
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Custom cursor and smooth-following background glow
     const cursor = document.getElementById("customCursor");
     const ring = document.getElementById("cursorRing");
     const glow = document.getElementById("mouseGlow");
     const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Custom cursor and mouse-following glow
-    if (finePointer) {
-      let mouseX = window.innerWidth / 2;
-      let mouseY = window.innerHeight / 2;
+    if (finePointer && !reducedMotion) {
+      let mouseX = innerWidth / 2;
+      let mouseY = innerHeight / 2;
       let ringX = mouseX;
       let ringY = mouseY;
       let glowX = mouseX;
       let glowY = mouseY;
 
-      document.addEventListener("mousemove", (event) => {
+      document.addEventListener("mousemove", event => {
         mouseX = event.clientX;
         mouseY = event.clientY;
 
         cursor.style.left = mouseX + "px";
         cursor.style.top = mouseY + "px";
-
         cursor.classList.add("visible");
         ring.classList.add("visible");
       });
 
       function animateEffects() {
-        ringX += (mouseX - ringX) * 0.16;
-        ringY += (mouseY - ringY) * 0.16;
-
-        glowX += (mouseX - glowX) * 0.07;
-        glowY += (mouseY - glowY) * 0.07;
+        ringX += (mouseX - ringX) * .16;
+        ringY += (mouseY - ringY) * .16;
+        glowX += (mouseX - glowX) * .07;
+        glowY += (mouseY - glowY) * .07;
 
         ring.style.left = ringX + "px";
         ring.style.top = ringY + "px";
-
         glow.style.left = glowX + "px";
         glow.style.top = glowY + "px";
 
@@ -1808,12 +1412,11 @@
         ring.classList.add("visible");
       });
 
-      document.querySelectorAll("a, button, [role='button']").forEach((element) => {
+      document.querySelectorAll("a, button, [role='button']").forEach(element => {
         element.addEventListener("mouseenter", () => {
           cursor.classList.add("hovering");
           ring.classList.add("hovering");
         });
-
         element.addEventListener("mouseleave", () => {
           cursor.classList.remove("hovering");
           ring.classList.remove("hovering");
@@ -1821,25 +1424,111 @@
       });
     }
 
-    // Scroll progress, sticky navigation, and back-to-top button
+    // Spotlight that follows the mouse over cards
+    if (finePointer) {
+      document.querySelectorAll(".card, .profile-card").forEach(card => {
+        card.addEventListener("mousemove", event => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty("--spot-x", (event.clientX - rect.left) + "px");
+          card.style.setProperty("--spot-y", (event.clientY - rect.top) + "px");
+        });
+      });
+    }
+
+    // Floating particles
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+    let particleFrame = null;
+
+    function resizeParticles() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvasWidth = window.innerWidth;
+      canvasHeight = window.innerHeight;
+      canvas.width = Math.floor(canvasWidth * dpr);
+      canvas.height = Math.floor(canvasHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const count = Math.min(65, Math.floor(canvasWidth / 22));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * canvasWidth,
+        y: Math.random() * canvasHeight,
+        size: Math.random() * 1.8 + .5,
+        speed: Math.random() * .32 + .08,
+        drift: (Math.random() - .5) * .25,
+        alpha: Math.random() * .4 + .12
+      }));
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      const accent = getComputedStyle(document.body).getPropertyValue("--accent").trim() || "#ff2929";
+
+      particles.forEach(p => {
+        p.y -= p.speed;
+        p.x += p.drift;
+
+        if (p.y < -5) {
+          p.y = canvasHeight + 5;
+          p.x = Math.random() * canvasWidth;
+        }
+        if (p.x < -5) p.x = canvasWidth + 5;
+        if (p.x > canvasWidth + 5) p.x = -5;
+
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = accent;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.globalAlpha = 1;
+      particleFrame = requestAnimationFrame(drawParticles);
+    }
+
+    if (!reducedMotion && canvas && ctx) {
+      resizeParticles();
+      drawParticles();
+      window.addEventListener("resize", resizeParticles, { passive: true });
+    }
+
+    // Red/purple theme toggle
+    const themeToggle = document.getElementById("themeToggle");
+
+    function setTheme(theme) {
+      document.body.dataset.theme = theme;
+      themeToggle.textContent = theme === "purple" ? "◈" : "◐";
+      themeToggle.setAttribute("aria-label", theme === "purple" ? "Switch to red theme" : "Switch to purple theme");
+      themeToggle.title = theme === "purple" ? "Switch to red theme" : "Switch to purple theme";
+      document.querySelector('meta[name="theme-color"]').content = theme === "purple" ? "#130820" : "#080808";
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const nextTheme = document.body.dataset.theme === "purple" ? "red" : "purple";
+      setTheme(nextTheme);
+      showToast(nextTheme === "purple" ? "Purple theme enabled" : "Red theme enabled");
+    });
+
+    // Scroll progress, sticky navigation, and back-to-top
     const progress = document.getElementById("scrollProgress");
     const header = document.getElementById("siteHeader");
     const backTop = document.getElementById("backTop");
 
     function updateScrollUI() {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      const amount = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
-
+      const scrollable = document.documentElement.scrollHeight - innerHeight;
+      const amount = scrollable > 0 ? (scrollY / scrollable) * 100 : 0;
       progress.style.width = amount + "%";
-      header.classList.toggle("scrolled", window.scrollY > 20);
-      backTop.classList.toggle("visible", window.scrollY > 500);
+      header.classList.toggle("scrolled", scrollY > 20);
+      backTop.classList.toggle("visible", scrollY > 500);
     }
 
-    window.addEventListener("scroll", updateScrollUI, { passive: true });
+    addEventListener("scroll", updateScrollUI, { passive: true });
     updateScrollUI();
 
     backTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
     });
 
     // Mobile navigation
@@ -1854,86 +1543,60 @@
 
     menuToggle.addEventListener("click", () => {
       const isOpen = navLinks.classList.toggle("open");
-
       menuToggle.setAttribute("aria-expanded", String(isOpen));
       menuToggle.textContent = isOpen ? "✕" : "☰";
     });
 
-    navLinks.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", closeMenu);
-    });
+    navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeMenu();
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) {
-        closeMenu();
-      }
+    document.addEventListener("click", event => {
+      if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) closeMenu();
     });
 
     // Reveal sections as they enter the screen
     const revealElements = document.querySelectorAll(".reveal");
 
-    if ("IntersectionObserver" in window &&
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const observer = new IntersectionObserver((entries, currentObserver) => {
-        entries.forEach((entry) => {
+    if ("IntersectionObserver" in window && !reducedMotion) {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add("in-view");
-            currentObserver.unobserve(entry.target);
+            observer.unobserve(entry.target);
           }
         });
-      }, {
-        threshold: 0.12,
-        rootMargin: "0px 0px -30px 0px"
-      });
+      }, { threshold: .12, rootMargin: "0px 0px -30px 0px" });
 
-      revealElements.forEach((element) => observer.observe(element));
+      revealElements.forEach(element => revealObserver.observe(element));
     } else {
-      revealElements.forEach((element) => element.classList.add("in-view"));
+      revealElements.forEach(element => element.classList.add("in-view"));
     }
 
-    // Highlight the current navigation section
+    // Highlight current navigation section
     const sections = document.querySelectorAll("main section[id]");
     const navItems = document.querySelectorAll(".navlinks a");
 
     if ("IntersectionObserver" in window) {
-      const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            navItems.forEach((link) => {
-              const active = link.getAttribute("href") === "#" + entry.target.id;
-
-              if (active) {
-                link.classList.add("active");
-              } else {
-                link.classList.remove("active");
-              }
-            });
-          }
+      const sectionObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          navItems.forEach(link => {
+            link.classList.toggle("active", link.getAttribute("href") === "#" + entry.target.id);
+          });
         });
-      }, {
-        rootMargin: "-30% 0px -60% 0px"
-      });
+      }, { rootMargin: "-30% 0px -60% 0px" });
 
-      sections.forEach((section) => sectionObserver.observe(section));
+      sections.forEach(section => sectionObserver.observe(section));
     }
 
-    // Toast notification
+    // Toast notifications
     const toast = document.getElementById("toast");
     let toastTimeout;
 
     function showToast(message) {
       toast.textContent = message;
       toast.classList.add("visible");
-
       clearTimeout(toastTimeout);
-
-      toastTimeout = setTimeout(() => {
-        toast.classList.remove("visible");
-      }, 2300);
+      toastTimeout = setTimeout(() => toast.classList.remove("visible"), 2300);
     }
 
     // Copy username
@@ -1943,6 +1606,159 @@
         showToast("Username copied to clipboard!");
       } catch {
         showToast("Username: ookwa");
+      }
+    });
+
+    // Command palette: Ctrl+K / Cmd+K
+    const paletteBackdrop = document.getElementById("paletteBackdrop");
+    const paletteSearch = document.getElementById("paletteSearch");
+    const commandList = document.getElementById("commandList");
+    const openPaletteButton = document.getElementById("openPalette");
+    const paletteHint = document.getElementById("paletteHint");
+
+    const commands = [
+      { title: "Home", detail: "Go to the top of the website", symbol: "⌂", action: () => goTo("#home") },
+      { title: "My profile", detail: "View socials and profile links", symbol: "◎", action: () => goTo("#profile") },
+      { title: "Gaming", detail: "Visit the featured Roblox game", symbol: "🎮", action: () => goTo("#game") },
+      { title: "About me", detail: "Learn more about ookwa", symbol: "◇", action: () => goTo("#about") },
+      { title: "Community", detail: "Explore the community section", symbol: "☰", action: () => goTo("#community") },
+      { title: "Join Discord", detail: "Open the Discord invite", symbol: "↗", action: () => window.open("https://discord.gg/eQQpezJBUB", "_blank", "noopener,noreferrer") },
+      { title: "Switch color theme", detail: "Toggle between red and purple", symbol: "◐", action: () => themeToggle.click() },
+      { title: "Copy username", detail: "Copy ookwa to your clipboard", symbol: "⧉", action: () => document.getElementById("copyUsername").click() }
+    ];
+
+    let selectedCommand = 0;
+    let visibleCommands = [...commands];
+
+    function renderCommands(query = "") {
+      const q = query.trim().toLowerCase();
+      visibleCommands = commands.filter(command =>
+        (command.title + " " + command.detail).toLowerCase().includes(q)
+      );
+
+      selectedCommand = Math.min(selectedCommand, Math.max(visibleCommands.length - 1, 0));
+      commandList.replaceChildren();
+
+      if (!visibleCommands.length) {
+        const empty = document.createElement("div");
+        empty.className = "command-empty";
+        empty.textContent = "No matching commands found.";
+        commandList.appendChild(empty);
+        return;
+      }
+
+      visibleCommands.forEach((command, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "command-item";
+        button.setAttribute("aria-label", command.title);
+
+        const symbol = document.createElement("span");
+        symbol.className = "command-symbol";
+        symbol.textContent = command.symbol;
+
+        const textWrap = document.createElement("span");
+        textWrap.className = "command-text";
+
+        const title = document.createElement("strong");
+        title.textContent = command.title;
+
+        const detail = document.createElement("small");
+        detail.textContent = command.detail;
+
+        const arrow = document.createElement("span");
+        arrow.className = "command-arrow";
+        arrow.textContent = "↵";
+
+        textWrap.append(title, detail);
+        button.append(symbol, textWrap, arrow);
+        button.addEventListener("click", () => runCommand(index));
+        button.addEventListener("mouseenter", () => {
+          selectedCommand = index;
+          updateSelectedCommand();
+        });
+        commandList.appendChild(button);
+      });
+
+      updateSelectedCommand();
+    }
+
+    function updateSelectedCommand() {
+      [...commandList.querySelectorAll(".command-item")].forEach((button, index) => {
+        button.style.background = index === selectedCommand ? "var(--glow)" : "transparent";
+        button.style.borderColor = index === selectedCommand ? "var(--line)" : "transparent";
+      });
+    }
+
+    function openPalette() {
+      closeMenu();
+      paletteBackdrop.classList.add("open");
+      paletteBackdrop.setAttribute("aria-hidden", "false");
+      paletteSearch.value = "";
+      selectedCommand = 0;
+      renderCommands();
+      setTimeout(() => paletteSearch.focus(), 30);
+    }
+
+    function closePalette() {
+      paletteBackdrop.classList.remove("open");
+      paletteBackdrop.setAttribute("aria-hidden", "true");
+      openPaletteButton.focus({ preventScroll: true });
+    }
+
+    function runCommand(index) {
+      const command = visibleCommands[index];
+      if (!command) return;
+      paletteBackdrop.classList.remove("open");
+      paletteBackdrop.setAttribute("aria-hidden", "true");
+      command.action();
+    }
+
+    function goTo(selector) {
+      const target = document.querySelector(selector);
+      if (target) target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth" });
+    }
+
+    openPaletteButton.addEventListener("click", openPalette);
+    paletteHint.addEventListener("click", openPalette);
+    paletteSearch.addEventListener("input", () => {
+      selectedCommand = 0;
+      renderCommands(paletteSearch.value);
+    });
+
+    paletteBackdrop.addEventListener("click", event => {
+      if (event.target === paletteBackdrop) closePalette();
+    });
+
+    document.addEventListener("keydown", event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        if (paletteBackdrop.classList.contains("open")) {
+          closePalette();
+        } else {
+          openPalette();
+        }
+      }
+
+      if (!paletteBackdrop.classList.contains("open")) {
+        if (event.key === "Escape") closeMenu();
+        return;
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closePalette();
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        selectedCommand = (selectedCommand + 1) % Math.max(visibleCommands.length, 1);
+        updateSelectedCommand();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        selectedCommand = (selectedCommand - 1 + visibleCommands.length) % Math.max(visibleCommands.length, 1);
+        updateSelectedCommand();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        runCommand(selectedCommand);
       }
     });
   </script>

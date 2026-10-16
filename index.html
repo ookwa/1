@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b12" />
+  <meta name="description" content="Meet ookwa and join the ookwa community on Discord." />
+  <title>ookwa — Community</title>
+
+  <style>
+    :root {
+      --bg: #080808;
+      --panel: rgba(20, 12, 12, .88);
+      --text: #f5f5fb;
+      --muted: #999999;
+      --accent: #ff2020;
+      --accent2: #850000;
+      --line: rgba(255,60,60,.16);
+    }
+    
+/* Custom cursor */
+@media (pointer: fine) {
+  body,
+  a,
+  button {
+    cursor: none !important;
+  }
+
+  .custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999999;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle,
+      #ffffff 0%,
+      #ff5555 25%,
+      #ff2020 55%,
+      rgba(133, 0, 0, 0.2) 100%
+    );
+    box-shadow:
+      0 0 12px rgba(255, 32, 32, 0.8),
+      0 0 28px rgba(255, 32, 32, 0.4);
+    transition:
+      width 0.2s ease,
+      height 0.2s ease,
+      opacity 0.15s ease,
+      box-shadow 0.2s ease;
+    will-change: left, top;
+  }
+
+  .custom-cursor.visible {
+    opacity: 1;
+  }
+
+  .custom-cursor.hovering {
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 80, 80, 0.8) 20%,
+      rgba(255, 32, 32, 0.45) 48%,
+      rgba(133, 0, 0, 0.05) 75%
+    );
+    box-shadow:
+      0 0 18px rgba(255, 32, 32, 0.9),
+      0 0 45px rgba(255, 32, 32, 0.55),
+      0 0 75px rgba(133, 0, 0, 0.25);
+  }
+}
+
+/* Keep the normal cursor on touchscreens */
+@media (pointer: coarse) {
+  .custom-cursor {
+    display: none;
+  }
+}
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background:
+        radial-gradient(ellipse at 15% 5%, rgba(139,0,0,.22), transparent 36rem),
+        radial-gradient(ellipse at 85% 35%, rgba(255,20,20,.08), transparent 34rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1100px, calc(100% - 40px)); margin: auto; }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+    }
+
+    .brand { font-size: 1.35rem; font-weight: 850; letter-spacing: -.06em; }
+    .brand span { color: var(--accent); }
+    .navlinks { display: flex; gap: 25px; color: var(--muted); font-size: .92rem; }
+    .navlinks a:hover { color: white; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 750;
+      font-size: .94rem;
+      background: linear-gradient(115deg, var(--accent), var(--accent2));
+      color: white;
+      box-shadow: 0 8px 30px rgba(255,32,32,.2);
+      transition: transform .2s, filter .2s;
+    }
+
+    .pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+    .pill.secondary {
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .hero { text-align: center; padding: 105px 0 95px; }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: #ffaaaa;
+      border: 1px solid rgba(255,32,32,.25);
+      background: rgba(255,32,32,.08);
+      border-radius: 999px;
+      padding: 7px 13px;
+      font-size: .82rem;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ff2020;
+      box-shadow: 0 0 12px #ff2020;
+    }
+
+    h1 {
+      font-size: clamp(3.4rem, 10vw, 6.7rem);
+      line-height: .98;
+      letter-spacing: -.085em;
+      margin: 25px 0 20px;
+    }
+
+    h1 .gradient {
+      background: linear-gradient(100deg, #fff 15%, #c4b5fd 55%, #f0abfc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.16rem);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .hint { margin-top: 18px; font-size: .8rem; color: #77758c; }
+    section { padding: 45px 0 65px; }
+
+    .section-head { text-align: center; margin-bottom: 28px; }
+    .section-head h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); letter-spacing: -.05em; }
+    .section-head p { color: var(--muted); margin-top: 7px; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 25px;
+      backdrop-filter: blur(12px);
+    }
+
+    .icon {
+      display: grid;
+      place-items: center;
+      width: 45px;
+      height: 45px;
+      border-radius: 14px;
+      background: rgba(255,32,32,.13);
+      color: #ff7777;
+      font-size: 1.35rem;
+      margin-bottom: 18px;
+    }
+
+    .card h3 { font-size: 1.08rem; margin-bottom: 7px; }
+    .card p { color: var(--muted); font-size: .94rem; }
+
+    .about {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .about .big {
+      min-height: 245px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(145deg, rgba(139,0,0,.2), rgba(255,32,32,.06));
+    }
+
+    .avatar {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      border-radius: 25px;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ff2020, #e879f9);
+      color: #100a1c;
+      box-shadow: 0 10px 35px rgba(255,32,32,.2);
+    }
+
+    .about h2 { font-size: 2rem; letter-spacing: -.05em; margin: 17px 0 7px; }
+    .about p { color: var(--muted); }
+    .values { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .value {
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .value strong { display: block; margin-bottom: 3px; }
+    .value span { font-size: .87rem; color: var(--muted); }
+
+    .join {
+      text-align: center;
+      border: 1px solid rgba(255,32,32,.2);
+      border-radius: 25px;
+      padding: 50px 22px;
+      background: linear-gradient(120deg, rgba(139,0,0,.12), rgba(255,32,32,.07));
+    }
+
+    .join h2 { font-size: clamp(1.9rem, 5vw, 2.8rem); letter-spacing: -.06em; }
+    .join p { color: var(--muted); max-width: 550px; margin: 10px auto 23px; }
+
+    footer { border-top: 1px solid var(--line); padding: 23px 0; color: #77758c; font-size: .85rem; }
+    .foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+    /* Discord-inspired profile card */
+    .section-title {
+      text-align: center;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      letter-spacing: -.05em;
+      margin-bottom: 8px;
+      transition: .3s;
+    }
+
+    .section-title:hover {
+      background: linear-gradient(90deg, #ff2020, #ffaaaa, #850000);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .section-description { text-align: center; color: var(--muted); margin-bottom: 28px; }
+
+    .profile-card {
+      max-width: 520px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #1e1f22;
+      border: 1px solid #343438;
+      box-shadow: 0 18px 55px #0008;
+      transition: .3s;
+    }
+
+    .profile-card:hover {
+      border-color: #ff2020;
+      box-shadow: 0 18px 55px #ff00001f;
+    }
+
+    .profile-banner {
+      height: 135px;
+      background: linear-gradient(130deg, #080808, #350000, #111);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .money {
+      position: absolute;
+      color: #ff2020;
+      font-size: 23px;
+      font-weight: 800;
+      opacity: .8;
+      animation: floatMoney 4s ease-in-out infinite;
+    }
+
+    .money:nth-child(1) { left: 8%; top: 20%; }
+    .money:nth-child(2) { left: 42%; top: 48%; animation-delay: -1s; }
+    .money:nth-child(3) { left: 72%; top: 16%; animation-delay: -2s; }
+    .money:nth-child(4) { left: 87%; top: 58%; animation-delay: -.5s; }
+    .money:nth-child(5) { left: 60%; top: 75%; animation-delay: -1.5s; }
+
+    @keyframes floatMoney {
+      0%, 100% { transform: translateY(0) rotate(-8deg); }
+      50% { transform: translateY(-12px) rotate(8deg); }
+    }
+
+    .profile-content { padding: 0 22px 24px; position: relative; }
+
+    .profile-top {
+      display: flex;
+      align-items: flex-end;
+      gap: 14px;
+      margin-top: -45px;
+      margin-bottom: 17px;
+      position: relative;
+    }
+
+    /* Updated profile picture using your Discord image */
+    .profile-picture {
+      width: 100px;
+      height: 100px;
+      flex: 0 0 100px;
+      border-radius: 50%;
+      border: 6px solid #1e1f22;
+      display: block;
+      object-fit: cover;
+      background: #151515;
+      box-shadow: 0 5px 22px #0008;
+    }
+
+    .profile-status {
+      background: #292a2e;
+      color: #f1f1f1;
+      padding: 11px 17px;
+      border-radius: 15px;
+      margin-bottom: 5px;
+      font-family: ui-monospace, monospace;
+    }
+
+    .profile-name { font-size: 30px; font-weight: 850; letter-spacing: -1px; overflow-wrap: anywhere; }
+    .profile-sub { color: #b5bac1; margin: 2px 0 18px; }
+    .profile-actions { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 20px; }
+
+    .profile-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 15px;
+      border-radius: 9px;
+      background: #2b2d31;
+      color: #eee;
+      font-weight: 700;
+      transition: .25s;
+    }
+
+    .profile-actions a.message { background: #5865f2; }
+
+    .profile-actions a:hover {
+      background: linear-gradient(120deg, #ff2020, #850000, #ff5555);
+      transform: translateY(-2px);
+    }
+
+    .profile-label { color: #b5bac1; font-size: 13px; font-weight: 800; margin: 14px 0 5px; }
+    .profile-bio { display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }
+    .profile-bio a { color: #00bfff; font-family: ui-monospace, monospace; }
+
+    .profile-bio a:hover {
+      background: linear-gradient(90deg, #ff2020, #ffaaaa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .member-since { color: #ddd; font-family: ui-monospace, monospace; }
+
+    .game-card {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      align-items: center;
+      gap: 22px;
+      max-width: 720px;
+      margin: 0 auto;
+      color: inherit;
+    }
+
+    .game-art {
+      height: 110px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #4a0000, #140000);
+      font-size: 48px;
+    }
+
+    .game-card h3 { margin-bottom: 8px; }
+    .game-card p { color: var(--muted); }
+    .game-card:hover { border-color: #ff2020; }
+
+    .button.primary {
+      display: inline-block;
+      padding: 9px 14px;
+      border-radius: 9px;
+      background: #850000;
+      color: white;
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .navlinks { display: none; }
+      .hero { padding: 78px 0 70px; }
+      .grid { grid-template-columns: 1fr; }
+      .about { grid-template-columns: 1fr; }
+      .values { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .game-card { grid-template-columns: 1fr; }
+      .game-art { height: 90px; }
+      .profile-name { font-size: 26px; }
+    }
+
+    @media (max-width: 420px) {
+      .values { grid-template-columns: 1fr; }
+      .wrap { width: min(100% - 28px, 1100px); }
+      .profile-content { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+
+<body> 
+<div class="custom-cursor" id="customCursor" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#home">ookwa<span>.</span></a>
+
+      <div class="navlinks">
+        <a href="#profile">Profile</a>
+        <a href="#game">Game</a>
+        <a href="#about">About</a>
+        <a href="#community">Community</a>
+        <a href="#join">Join us</a>
+      </div>
+
+      <a class="pill secondary" href="#join">Discord ↗</a>
+    </nav>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Welcome to my corner of the internet
+        </div>
+
+        <h1><span class="gradient">hey, i'm ookwa.</span></h1>
+
+        <p>
+          A little about me, the things I enjoy, and the community I'm building.
+          Come hang out, meet new people, and be part of the vibe.
+        </p>
+
+        <div class="actions">
+          <a class="pill" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">
+            Join the Discord <span>↗</span>
+          </a>
+          <a class="pill secondary" href="#about">Get to know me ↓</a>
+        </div>
+
+        <div class="hint">Made for the ookwa community · Find your people</div>
+      </section>
+
+      <section class="profile-section" id="profile">
+        <h2 class="section-title">My Profile</h2>
+        <p class="section-description">A little snapshot of me.</p>
+
+        <div class="profile-card">
+          <div class="profile-banner" aria-hidden="true">
+            <span class="money">$</span>
+            <span class="money">$</span>
+            <span class="money">$</span>
+            <span class="money">$</span>
+            <span class="money">$</span>
+          </div>
+
+          <div class="profile-content">
+            <div class="profile-top">
+              <img
+                class="profile-picture"
+                alt="ookwa profile picture"
+                src="https://media.discordapp.net/attachments/1557470309479882873/1557486392102363136/7d637a684bf69fd3c99462b01a381222.webp?backend=b2&ex=6ad1dcfc&is=6ad08b7c&hm=3d573c2258bffd417a56ac7eb2a7bd4f0f122933a052021643cf1850b53d0cb6&=&format=webp&width=535&height=640"
+              />
+            </div>
+
+            <div class="profile-name">ookwa</div>
+            <div class="profile-sub">ookwa&nbsp; • &nbsp;sad</div>
+
+            <div class="profile-actions">
+              <a class="message" href="https://discord.com/users/1420765933177278565" target="_blank" rel="noopener noreferrer">♡ Message</a>
+              <a href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer" aria-label="Discord community">♧ Community</a>
+              <a href="#profile" aria-label="Profile details">•••</a>
+            </div>
+
+            <div class="profile-label">Bio</div>
+            <div class="profile-bio">
+              <a href="https://guns.lol/ookwa" target="_blank" rel="noopener noreferrer">https://guns.lol/ookwa</a>
+              <a href="https://x.com/missedcalls_0" target="_blank" rel="noopener noreferrer">https://x.com/missedcalls_0</a>
+              <a href="https://www.youtube.com/@ookwa-1" target="_blank" rel="noopener noreferrer">https://www.youtube.com/@ookwa-1</a>
+              <a href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">https://discord.gg/eQQpezJBUB</a>
+            </div>
+
+            <div class="profile-label">Member Since</div>
+            <div class="member-since">Sep 25, 2025</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="game">
+        <h2 class="section-title">Currently Playing</h2>
+        <p class="section-description">Check out one of my favorite games.</p>
+
+        <a class="card game-card" href="https://www.roblox.com/games/116185111235520/Getbetters-MM2-3" target="_blank" rel="noopener noreferrer">
+          <div class="game-art" aria-hidden="true">🔪</div>
+          <div>
+            <h3>Getbetter's MM2</h3>
+            <p>Jump into Getbetter's MM2 on Roblox. Click here to view the game and play.</p>
+            <span class="button primary" style="margin-top:18px;">Play on Roblox ↗</span>
+          </div>
+        </a>
+      </section>
+
+      <section id="about">
+        <div class="about">
+          <div class="card big">
+            <div class="avatar">o.</div>
+            <div>
+              <h2>About ookwa</h2>
+              <p>Just me, doing my thing and building a place for people to connect.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>A community built around good vibes.</h3>
+            <p style="margin-bottom:20px">
+              This is where friends can chat, share what they're working on, play games,
+              and get to know each other. Everyone who respects the community is welcome.
+            </p>
+
+            <div class="values">
+              <div class="value"><strong>✦ Meet people</strong><span>Make friends and connect.</span></div>
+              <div class="value"><strong>⌘ Gaming</strong><span>Talk games and play together.</span></div>
+              <div class="value"><strong>✧ Share stuff</strong><span>Show off your projects.</span></div>
+              <div class="value"><strong>♡ Good vibes</strong><span>Keep it friendly and chill.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="community">
+        <div class="section-head">
+          <h2>What's the community about?</h2>
+          <p>A simple place to talk, hang out, and have fun.</p>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <div class="icon">☰</div>
+            <h3>Chat & connect</h3>
+            <p>Join conversations, meet new people, and get involved with the community.</p>
+          </article>
+
+          <article class="card">
+            <div class="icon">◇</div>
+            <h3>Gaming & hobbies</h3>
+            <p>Talk about your favorite games, share clips, and find people to play with.</p>
+          </article>
+
+          <article class="card">
+            <div class="icon">✦</div>
+            <h3>Community events</h3>
+            <p>Stay tuned for events, announcements, and things the community can enjoy together.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="join">
+        <div class="join">
+          <h2>You're invited.</h2>
+          <p>
+            Come say hi in the ookwa Discord community. Read the rules,
+            be respectful, and make yourself at home.
+          </p>
+          <a class="pill" href="https://discord.gg/eQQpezJBUB" target="_blank" rel="noopener noreferrer">
+            Join ookwa's Discord ↗
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot">
+        <span>© <span id="year"></span> ookwa. All good vibes reserved.</span>
+        <a href="#home">Back to top ↑</a>
+      </div>
+    </footer>
+  </div>
+  
+<script>
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+  const cursor = document.getElementById("customCursor");
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+
+  if (finePointer) {
+    document.addEventListener("mousemove", (event) => {
+      cursor.style.left = event.clientX + "px";
+      cursor.style.top = event.clientY + "px";
+      cursor.classList.add("visible");
+    });
+
+    document.addEventListener("mouseleave", () => {
+      cursor.classList.remove("visible");
+    });
+
+    document.addEventListener("mouseenter", () => {
+      cursor.classList.add("visible");
+    });
+
+    document.querySelectorAll(
+      'a, button, input, select, textarea, [role="button"]'
+    ).forEach((element) => {
+      element.addEventListener("mouseenter", () => {
+        cursor.classList.add("hovering");
+      });
+
+      element.addEventListener("mouseleave", () => {
+        cursor.classList.remove("hovering");
+      });
+    });
+  }
+</script>
+</body>
+</html>
